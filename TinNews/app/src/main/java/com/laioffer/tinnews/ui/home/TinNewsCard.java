@@ -9,7 +9,7 @@ import com.laioffer.tinnews.model.Article;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
-import com.mindorks.placeholderview.annotations.swipe.SwipeCancelState;
+//import com.mindorks.placeholderview.annotations.swipe.SwipeCancelState;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.squareup.picasso.Picasso;
@@ -27,16 +27,19 @@ public class TinNewsCard {
     private TextView newsDescription;
 
     private final Article article;
+    private final OnSwipeListener onSwipeListener;
 
-    public TinNewsCard(Article news) {
+    public TinNewsCard(Article news, OnSwipeListener onSwipeListener) {
         this.article = news;
+        this.onSwipeListener = onSwipeListener;
     }
+
 
     @Resolve
     private void onResolved() {
         newsTitle.setText(article.title);
         newsDescription.setText(article.description);
-        //转化成rehouse里的图片
+        //转化成resource里的图片
         if (article.urlToImage == null || article.urlToImage.isEmpty()) {
             image.setImageResource(R.drawable.ic_empty_image);
         } else {
@@ -48,16 +51,26 @@ public class TinNewsCard {
     @SwipeOut
     private void onSwipedOut() {
         Log.d("EVENT", "onSwipedOut");
+        onSwipeListener.onDisLike(article);
     }
 
-    @SwipeCancelState
-    private void onSwipeCancelState() {
-        Log.d("EVENT", "onSwipeCancelState");
-    }
+//    @SwipeCancelState
+//    private void onSwipeCancelState() {
+//        Log.d("EVENT", "onSwipeCancelState");
+//    }
 
     @SwipeIn
     private void onSwipeIn() {
         Log.d("EVENT", "onSwipedIn");
+        article.favorite = true;
+        onSwipeListener.onLike(article);
     }
+
+    interface OnSwipeListener {
+        void onLike(Article news);
+
+        void onDisLike(Article news);
+    }
+
 }
 

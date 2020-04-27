@@ -13,11 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import com.laioffer.tinnews.R;
 import com.laioffer.tinnews.databinding.FragmentSearchBinding;
+import com.laioffer.tinnews.model.Article;
 import com.laioffer.tinnews.repository.NewsRepository;
 import com.laioffer.tinnews.repository.NewsViewModelFactory;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +42,7 @@ public class SearchFragment extends Fragment {
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
+
     }
 
     @Override
@@ -45,12 +50,25 @@ public class SearchFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //显示的view 格式
         SearchNewsAdapter newsAdapter = new SearchNewsAdapter();
+        newsAdapter.setLikeListener(new SearchNewsAdapter.LikeListener() {
+            @Override
+            public void onLike(Article article) {
+                viewModel.setFavoriteArticleInput(article);
+            }
+
+            @Override
+            public void onClick(Article article) {
+                // TODO
+            }
+
+        });
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         gridLayoutManager.setSpanSizeLookup(
                 new GridLayoutManager.SpanSizeLookup() {
                     @Override
                     public int getSpanSize(int position) {
-                        return position %3 == 0 ? 2 : 1;
+                        return position % 3 == 0 ? 2 : 1;
                     }
                 });
 
@@ -79,6 +97,18 @@ public class SearchFragment extends Fragment {
                             if (newsResponse != null) {
                                 Log.d("SearchFragment", newsResponse.toString());
                                 newsAdapter.setArticles(newsResponse.articles);
+                            }
+                        });
+        viewModel
+                .onFavorite()
+                .observe(
+                        getViewLifecycleOwner(),
+                        isSuccess -> {
+                            if (isSuccess) {
+                                Toast.makeText(requireActivity(), "Success", LENGTH_SHORT).show();
+                                newsAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(requireActivity(), "You might have liked before", LENGTH_SHORT).show();
                             }
                         });
     }

@@ -25,6 +25,5 @@ public class TinNewsApplication extends Application {
     //作用在于application scope
     public static AppDatabase getDatabase() {
         return database;
-
     }
 }
