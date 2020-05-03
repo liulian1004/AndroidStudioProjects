@@ -5,10 +5,12 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Objects;
 
+//要class里面的结构都是符合serializable
 @Entity
-public class Article {
+public class Article implements Serializable {
     @Ignore
     public Source source;
     public String author;

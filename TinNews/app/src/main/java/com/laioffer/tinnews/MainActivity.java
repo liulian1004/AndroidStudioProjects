@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
                 .findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(navView, navController);
-        NavigationUI.setupActionBarWithNavController(this, navController);
+        //cancel action bar
+       // NavigationUI.setupActionBarWithNavController(this, navController);
 
     }
 

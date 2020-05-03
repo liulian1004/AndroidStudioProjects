@@ -28,7 +28,6 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
 
     interface LikeListener {
         void onLike(Article article);
-
         void onClick(Article article);
     }
 
@@ -36,6 +35,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
     public void setArticles(List<Article> newsList) {
         this.articles.clear();
         this.articles.addAll(newsList);
+        //有新的article出来的时候跟新
         notifyDataSetChanged();
     }
 
@@ -53,7 +53,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         Article article = articles.get(position);
         holder.title.setText(article.title);
 
-        if (article.urlToImage == null) {
+        if (article.urlToImage == null || article.urlToImage.isEmpty()) {
             holder.newsImage.setImageResource(R.drawable.ic_empty_image);
         } else {
             Picasso.get().load(article.urlToImage).into(holder.newsImage);
@@ -69,6 +69,13 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
                         likeListener.onLike(article);
                     });
         }
+
+        //进入detail页面
+        holder.itemView.setOnClickListener(
+                v -> {
+                    likeListener.onClick(article);
+                });
+
     }
 
     @Override
